@@ -3,10 +3,10 @@ import Layout from "components/layout";
 
 const Community: NextPage = () => {
   return (
-    <Layout title="Home" hasTabBar>
-      <div className="space-y-8 py-16 px-4">
+    <Layout title="Community" hasTabBar={true}>
+      <div className="space-y-8 py-12 px-5 ">
         {[1, 2, 3, 4, 5, 6].map((_, i) => (
-          <div key={i} className="flex cursor-pointer flex-col items-start">
+          <div key={i} className="flex cursor-pointer flex-col items-start ">
             <span className="flex items-center justify-center rounded-full bg-gray-200 px-2.5 py-0.5 text-xs">
               동네질문
             </span>
@@ -56,7 +56,7 @@ const Community: NextPage = () => {
             </div>
           </div>
         ))}
-        <button className="fixed right-5 bottom-11 flex h-16 w-16 items-center justify-center rounded-full bg-teal-500  text-white shadow-xl hover:bg-teal-300">
+        <button className="fixed right-5 bottom-24 flex items-center justify-center rounded-full bg-teal-500 p-4  text-white shadow-xl hover:bg-teal-300">
           <svg
             className="h-6 w-6"
             fill="none"

@@ -1,4 +1,5 @@
-import React from "react";
+import type { NextPage } from "next";
+import React, { useState } from "react";
 import { cls } from "libs/utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -16,41 +17,70 @@ export default function Layout({
   hasTabBar,
   children,
 }: LayoutProps) {
+  const router = useRouter();
+  const onGoBack = () => {
+    router.back();
+  };
+
   return (
-    <div>
-      <div className="item-center fixed top-0 w-full border-b bg-white bg-opacity-80 py-4 px-6 text-lg font-medium text-gray-700 backdrop-blur-sm">
+    <div className="flex w-full justify-center">
+      <div className="fixed top-0 flex h-14 w-full items-center border-b bg-white bg-opacity-80 px-6 text-lg font-medium text-gray-800 backdrop-blur-sm">
+        {canGoBack ? <button onClick={() => onGoBack()}>&larr;</button> : null}
         {title ? <span>{title}</span> : null}
       </div>
-      <div className={cls("pt-16", hasTabBar ? "pb-14" : "")}>{children}</div>
+      <div className={cls("w-full bg-white pt-8", hasTabBar ? "pb-14" : "")}>
+        {children}
+      </div>
       {hasTabBar ? (
-        <nav className="fixed bottom-0 flex h-16 w-full items-center justify-between border-t bg-white px-7 text-gray-800">
-          <Link href="/">
-            <a className="flex flex-col items-center justify-center space-y-0">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                className="h-6 w-6 text-gray-800"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
-                />
-              </svg>
-              <span className="text-xs">home</span>
-            </a>
+        <nav className="fixed bottom-0 flex h-16 w-full justify-between border-t bg-white px-5 text-xs text-gray-700  md:bg-black">
+          <Link
+            href="/"
+            className="flex flex-col items-center justify-center space-y-0"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className={cls(
+                "h-6 w-6 ",
+                router.asPath === "/"
+                  ? " text-teal-500"
+                  : "font-extrabold text-gray-800",
+              )}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+              />
+            </svg>
+            <span
+              className={cls(
+                "text-xs ",
+                router.asPath === "/" ? " text-teal-500" : "text-gray-800",
+              )}
+            >
+              home
+            </span>
           </Link>
-          <div className="flex flex-col items-center justify-center space-y-0">
+          <Link
+            href="/community"
+            className="flex flex-col items-center justify-center space-y-0"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke="currentColor"
-              className="h-6 w-6 text-gray-800"
+              className={cls(
+                "h-6 w-6 ",
+                router.asPath === "/community"
+                  ? " text-teal-500"
+                  : "font-extrabold text-gray-800",
+              )}
             >
               <path
                 strokeLinecap="round"
@@ -58,16 +88,33 @@ export default function Layout({
                 d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
               />
             </svg>
-            <span className="text-xs">Near</span>
-          </div>
-          <div className="flex flex-col items-center justify-center space-y-0">
+            <span
+              className={cls(
+                "text-xs ",
+                router.asPath === "/community"
+                  ? " text-teal-500"
+                  : "text-gray-800",
+              )}
+            >
+              Near
+            </span>
+          </Link>
+          <Link
+            href="/chats"
+            className="flex flex-col items-center justify-center space-y-0"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke="currentColor"
-              className="h-6 w-6 text-gray-800"
+              className={cls(
+                "h-6 w-6 ",
+                router.asPath === "/chats"
+                  ? " text-teal-500"
+                  : "font-extrabold text-gray-800",
+              )}
             >
               <path
                 strokeLinecap="round"
@@ -75,16 +122,31 @@ export default function Layout({
                 d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
               />
             </svg>
-            <span className="text-xs">chats</span>
-          </div>
-          <div className="flex flex-col items-center justify-center space-y-0">
+            <span
+              className={cls(
+                "text-xs ",
+                router.asPath === "/chats" ? " text-teal-500" : "text-gray-800",
+              )}
+            >
+              chats
+            </span>
+          </Link>
+          <Link
+            href="/streams"
+            className="flex flex-col items-center justify-center space-y-0"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke="currentColor"
-              className="h-6 w-6 text-gray-800"
+              className={cls(
+                "h-6 w-6 ",
+                router.asPath === "/streams"
+                  ? " text-teal-500"
+                  : "font-extrabold text-gray-800",
+              )}
             >
               <path
                 strokeLinecap="round"
@@ -92,16 +154,33 @@ export default function Layout({
                 d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
               />
             </svg>
-            <span className="text-xs">Live</span>
-          </div>
-          <div className="flex flex-col items-center justify-center space-y-0">
+            <span
+              className={cls(
+                "text-xs ",
+                router.asPath === "/streams"
+                  ? " text-teal-500"
+                  : "text-gray-800",
+              )}
+            >
+              Live
+            </span>
+          </Link>
+          <Link
+            href="/profile"
+            className="flex flex-col items-center justify-center space-y-0"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke-width="1.5"
+              strokeWidth="1.5"
               stroke="currentColor"
-              className="h-6 w-6 text-gray-800"
+              className={cls(
+                "h-6 w-6 ",
+                router.asPath === "/profile"
+                  ? " text-teal-500"
+                  : "font-extrabold text-gray-800",
+              )}
             >
               <path
                 strokeLinecap="round"
@@ -109,8 +188,17 @@ export default function Layout({
                 d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
               />
             </svg>
-            <span className="text-xs">Profile</span>
-          </div>
+            <span
+              className={cls(
+                "text-xs ",
+                router.asPath === "/profile"
+                  ? " text-teal-500"
+                  : "text-gray-800",
+              )}
+            >
+              Profile
+            </span>
+          </Link>
         </nav>
       ) : null}
     </div>

@@ -6,18 +6,19 @@ import HomeList from "./home";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const [count, setCount] = useState(1);
-  const addCount = (num: number) => {
-    return setCount(num + 1);
-  };
-  const minusCount = (num: number) => {
-    return setCount(num - 1);
-  };
+  // const [count, setCount] = useState(1);
+  // const addCount = (num: number) => {
+  //   return setCount(num + 1);
+  // };
+  // const minusCount = (num: number) => {
+  //   return setCount(num - 1);
+  // };
   return (
-    <Layout title="Home" hasTabBar>
-      <div className="grid min-h-screen place-content-center gap-10 space-y-10 bg-slate-400 px-10 py-20 dark:bg-slate-800 lg:grid-cols-3">
-        <HomeList />
-        <div className="flex flex-col justify-between rounded-2xl bg-white p-10 shadow-xl">
+    <Layout title="Home" hasTabBar={true}>
+      <HomeList />
+      {/* <div className="grid min-h-screen w-full place-content-center gap-10 space-y-10 bg-white px-10  py-20 lg:grid-cols-3"> */}
+
+      {/* <div className="flex flex-col justify-between rounded-2xl bg-white p-10 shadow-xl">
           <span className="text-3xl font-bold">Select Item</span>
           <ul>
             {[1, 2, 3, 4, 5].map((i) => (
@@ -147,8 +148,8 @@ export default function Home() {
             className="rounded-sm pl-2"
           />
           <input type="submit" value="Login" className="bg-white" />
-        </form>
-      </div>
+        </form> */}
+      {/* </div> */}
     </Layout>
   );
 }
