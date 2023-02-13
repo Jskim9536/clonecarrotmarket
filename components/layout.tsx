@@ -36,7 +36,7 @@ export default function Layout({
           <Link
             href="/"
             className="flex flex-col items-center justify-center space-y-0"
-          >
+            legacyBehavior>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -68,7 +68,7 @@ export default function Layout({
           <Link
             href="/community"
             className="flex flex-col items-center justify-center space-y-0"
-          >
+            legacyBehavior>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -102,7 +102,7 @@ export default function Layout({
           <Link
             href="/chats"
             className="flex flex-col items-center justify-center space-y-0"
-          >
+            legacyBehavior>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -134,7 +134,7 @@ export default function Layout({
           <Link
             href="/streams"
             className="flex flex-col items-center justify-center space-y-0"
-          >
+            legacyBehavior>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -168,7 +168,7 @@ export default function Layout({
           <Link
             href="/profile"
             className="flex flex-col items-center justify-center space-y-0"
-          >
+            legacyBehavior>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

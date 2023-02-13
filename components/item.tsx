@@ -23,11 +23,8 @@ export default function Item({
   key,
 }: ItemProp) {
   return (
-    <Link href={`/items/${key}`}>
-      <a
-        // key={key}
-        className="cursor-pointer  rounded-xl bg-white px-9 py-8 shadow-sm transition duration-300 hover:bg-opacity-60"
-      >
+    <LinklegacyBehavior key={key} href={`/items/${key}`}>
+      <a className="cursor-pointer  rounded-xl bg-white px-9 py-8 shadow-sm transition duration-300 hover:bg-opacity-60">
         <div className="flex flex-row gap-3">
           <div className="h-20 w-20 rounded-xl bg-gray-400" />
           <div className=" flex flex-col pt-2 ">
@@ -73,6 +70,6 @@ export default function Item({
           </div>
         </div>
       </a>
-    </Link>
+    </LinklegacyBehavior>
   );
 }
