@@ -1,11 +1,13 @@
 import type { NextPage } from "next";
 import Item from "components/item";
+import FloatingButtion from "components/floatingButton";
 
 const HomeList: NextPage = () => {
   return (
-    <div className="grid min-h-screen w-full gap-6 bg-gray-200 py-14 px-8 sm:grid-cols-2 xl:grid-cols-3">
+    <div className="grid min-h-screen w-full gap-6 bg-gray-100 py-14 px-8 ">
       {[...Array(10)].map((_, i) => (
         <Item
+          id={i}
           key={i}
           title={"New iPhone 14"}
           color={"Black"}
@@ -13,6 +15,7 @@ const HomeList: NextPage = () => {
           likeCount={1}
           commentCount={1}
         />
+
         // <div
         //   key={i}
         //   className="cursor-pointer  rounded-xl bg-white px-9 py-8 shadow-sm transition duration-300 hover:bg-opacity-60"
@@ -63,7 +66,7 @@ const HomeList: NextPage = () => {
         //   </div>
         // </div>
       ))}
-      <button className="fixed right-5 bottom-24 flex h-20 w-20 items-center justify-center rounded-full bg-teal-500  text-white shadow-xl hover:bg-teal-300">
+      <FloatingButtion href="/items/upload">
         <svg
           className="h-6 w-6"
           xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +82,7 @@ const HomeList: NextPage = () => {
             d="M12 6v6m0 0v6m0-6h6m-6 0H6"
           />
         </svg>
-      </button>
+      </FloatingButtion>
     </div>
   );
 };

@@ -15,10 +15,11 @@ export default function Home() {
   // };
   return (
     <Layout title="Home" hasTabBar={true}>
-      <HomeList />
-      {/* <div className="grid min-h-screen w-full place-content-center gap-10 space-y-10 bg-white px-10  py-20 lg:grid-cols-3"> */}
+      <>
+        <HomeList />
+        {/* <div className="grid min-h-screen w-full place-content-center gap-10 space-y-10 bg-white px-10  py-20 lg:grid-cols-3"> */}
 
-      {/* <div className="flex flex-col justify-between rounded-2xl bg-white p-10 shadow-xl">
+        {/* <div className="flex flex-col justify-between rounded-2xl bg-white p-10 shadow-xl">
           <span className="text-3xl font-bold">Select Item</span>
           <ul>
             {[1, 2, 3, 4, 5].map((i) => (
@@ -149,7 +150,8 @@ export default function Home() {
           />
           <input type="submit" value="Login" className="bg-white" />
         </form> */}
-      {/* </div> */}
+        {/* </div> */}
+      </>
     </Layout>
   );
 }

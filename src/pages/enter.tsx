@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { cls } from "libs/utils";
+import { cls } from "libs/client/utils";
+import { FieldError, FieldErrors, useForm } from "react-hook-form";
+import Input from "components/input";
+import { json } from "stream/consumers";
+import useMutation from "libs/client/useMutation";
 
 const marginBetween: number = 14;
 
@@ -7,11 +11,36 @@ const marginBetween: number = 14;
 // function cls(...classnames: string[]) {
 //   return classnames.join(" ");
 // }
+interface EnterProps {
+  email?: string;
+  phone?: string;
+}
 
 export default function Enter() {
+  const [enter, { loading, data, error }] = useMutation("/api/users/enter");
+  const [submitting, setSubmitting] = useState(false);
+  const { register, watch, reset, handleSubmit } = useForm<EnterProps>();
   const [method, setMethod] = useState<"email" | "phone">("email");
-  const onEmailClick = () => setMethod("email");
-  const onPhoneClick = () => setMethod("phone");
+  const onEmailClick = () => {
+    reset();
+    setMethod("email");
+  };
+  const onPhoneClick = () => {
+    reset();
+    setMethod("phone");
+  };
+  const onValid = (data: EnterProps) => {
+    setSubmitting(true);
+    fetch("/api/users/enter", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then(() => {
+      setSubmitting(false);
+    });
+  };
   return (
     <div className="flex min-h-screen flex-col justify-center bg-slate-300">
       <div className="mx-5 rounded-xl bg-white bg-opacity-80 p-5 shadow-md backdrop-blur-sm">
@@ -50,32 +79,25 @@ export default function Enter() {
               </button>
             </div>
           </div>
-          <form className="mt-8 flex flex-col">
-            <label className="font-me mb-1 text-sm text-gray-700">
-              {method === "email" ? "Email address" : null}
-              {method === "phone" ? "Phone number" : null}
-            </label>
-            <div>
-              {method === "email" ? (
-                <input
-                  className="w-full appearance-none rounded-md border border-gray-300 px-2 py-2 placeholder-gray-400 shadow-sm  focus:border-teal-400 focus:outline-none focus:ring-teal-400"
-                  type="email"
-                  required
-                />
-              ) : null}
-              {method === "phone" ? (
-                <div className="flex rounded-md shadow-sm">
-                  <span className="flex items-center justify-center rounded-l-md border border-r-0 bg-white px-3 text-gray-500 shadow-sm">
-                    +82
-                  </span>
-                  <input
-                    className="w-full appearance-none rounded-md rounded-l-none border border-gray-300 px-2 py-2 placeholder-gray-400 shadow-sm  focus:border-teal-400 focus:outline-none focus:ring-teal-400 "
-                    type="number"
-                    required
-                  />
-                </div>
-              ) : null}
-            </div>
+          <form className="mt-8 flex flex-col" onSubmit={handleSubmit(onValid)}>
+            {method === "email" ? (
+              <Input
+                label={"Email address"}
+                name={"email"}
+                kind={"text"}
+                required
+                register={register("email", { required: true })}
+              />
+            ) : null}
+            {method === "phone" ? (
+              <Input
+                label={"Phone number"}
+                name={"phone"}
+                kind={"phone"}
+                required
+                register={register("phone", { required: true })}
+              />
+            ) : null}
             <button className="mx-auto mt-8 w-1/2 rounded-full bg-teal-500 py-2 font-bold text-white shadow-sm transition duration-500 hover:bg-teal-400">
               {method === "email" ? "Get login link" : null}
               {method === "phone" ? "Get one-time password" : null}
