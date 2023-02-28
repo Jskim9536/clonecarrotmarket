@@ -1,9 +1,9 @@
 import type { NextPage } from "next";
 import Layout from "components/layout";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR from "swr";
 import useUser from "@libs/client/useUser";
 import { useRouter } from "next/router";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import Skeleton from "react-loading-skeleton";
 import { Suspense } from "react";
 
 interface ChatsProps {
@@ -31,7 +31,6 @@ const Chats: NextPage = () => {
                 <Suspense fallback={<Skeleton />}>
                   <div className="h-12 w-12 rounded-full bg-slate-300" />
                 </Suspense>
-
                 <div>
                   <p className="text-gray-700">
                     {user?.name === chat?.chatBy?.name
