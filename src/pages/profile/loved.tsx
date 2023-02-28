@@ -1,19 +1,44 @@
+import useMutation from "@libs/client/useMutation";
+import { Fav, Product } from "@prisma/client";
 import type { NextPage } from "next";
+import useSWR, { useSWRConfig } from "swr";
+
+interface ProductWithCount extends Product {
+  _count: {
+    Fav: number;
+  };
+}
+
+interface LovedProductExtends extends Fav {
+  product: ProductWithCount;
+}
+
+interface LovedProps {
+  ok: boolean;
+  loved: LovedProductExtends[];
+  // product: Product;
+}
 
 const Loved: NextPage = () => {
+  const { data } = useSWR<LovedProps>("/api/users/me/loved");
+
   return (
     <div className="grid min-h-screen w-full gap-6 bg-gray-200 py-14 px-8 sm:grid-cols-2 xl:grid-cols-3">
-      {[...Array(10)].map((_, i) => (
+      {data?.loved?.map((product) => (
         <div
-          key={i}
+          key={product?.id}
           className="cursor-pointer  rounded-xl bg-white px-9 py-8 shadow-sm transition duration-300 hover:bg-opacity-60"
         >
           <div className="flex flex-row gap-3">
             <div className="h-20 w-20 rounded-xl bg-gray-400" />
             <div className=" flex flex-col pt-2 ">
-              <h3 className="text-md font-semibold">New iPhone 14</h3>
+              <h3 className="text-md font-semibold">
+                {product?.product?.name}
+              </h3>
               <span className="text-xs text-gray-500">Black</span>
-              <span className=" text-md mt-1 font-bold">$95</span>
+              <span className=" text-md mt-1 font-bold">
+                ${product?.product?.price}
+              </span>
             </div>
           </div>
           <div className="-mb-1 flex w-full flex-row justify-end gap-3">
@@ -32,7 +57,9 @@ const Loved: NextPage = () => {
                   d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                 ></path>
               </svg>
-              <span className="text-sm font-light">1</span>
+              <span className="text-sm font-light">
+                {product.product?._count.Fav}
+              </span>
             </div>
             <div className="flex flex-row items-center justify-center gap-1">
               <svg

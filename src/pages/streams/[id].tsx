@@ -1,22 +1,39 @@
+import { Message, Stream } from "@prisma/client";
 import type { NextPage } from "next";
+import { useRouter } from "next/router";
+import { useEffect, useRef } from "react";
+import useSWR, { useSWRConfig } from "swr";
 
-const Stream: NextPage = () => {
+interface StreamMessageProps extends Stream {
+  Message: Message[];
+}
+
+interface StreamProps {
+  stream: StreamMessageProps;
+}
+
+const Streams: NextPage = () => {
+  const router = useRouter();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    scrollRef?.current?.scrollIntoView();
+  });
+
+  const { data, mutate } = useSWR<StreamProps>(
+    router.query.id ? `/api/streams/${router.query.id}` : null, //보호 로직 없으면 에러날 수 있음.
+  );
+
   return (
     <div className="space-y-4 py-10  px-4">
       <div className="aspect-video w-full rounded-md bg-slate-300 shadow-sm" />
       <div className="mt-5">
-        <h1 className="text-3xl font-bold text-gray-900">Galaxy S50</h1>
-        <span className="mt-3 block text-2xl text-gray-900">$140</span>
-        <p className=" my-6 text-gray-700">
-          My money&apos;s in that office, right? If she start giving me some
-          bullshit about it ain&apos;t there, and we got to go someplace else
-          and get it, I&apos;m gonna shoot you in the head then and there. Then
-          I&apos;m gonna shoot that bitch in the kneecaps, find out where my
-          goddamn money is. She gonna tell me too. Hey, look at me when I&apos;m
-          talking to you, motherfucker. You listen: we go in there, and that
-          ni**a Winston or anybody else is in there, you the first motherfucker
-          to get shot. You understand?
-        </p>
+        <h1 className="text-3xl font-bold text-gray-900">
+          {data?.stream?.name}
+        </h1>
+        <span className="mt-3 block text-2xl text-gray-900">
+          ${data?.stream?.price}
+        </span>
+        <p className=" my-6 text-gray-700">{data?.stream?.description}</p>
       </div>
       <div>
         <h2 className="text-2xl font-bold text-gray-900">Live Chat</h2>
@@ -106,6 +123,7 @@ const Stream: NextPage = () => {
             </div>
           </div>
         </div>
+        <div ref={scrollRef} />
         <div className="fixed inset-x-0 bottom-0  bg-white py-2">
           <div className="relative mx-auto flex w-full  max-w-md items-center">
             <input
@@ -120,9 +138,9 @@ const Stream: NextPage = () => {
                 className="h-10 w-10 transition hover:fill-teal-400"
               >
                 <path
-                  fill-rule="evenodd"
+                  fillRule="evenodd"
                   d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm4.28 10.28a.75.75 0 000-1.06l-3-3a.75.75 0 10-1.06 1.06l1.72 1.72H8.25a.75.75 0 000 1.5h5.69l-1.72 1.72a.75.75 0 101.06 1.06l3-3z"
-                  clip-rule="evenodd"
+                  clipRule="evenodd"
                 />
               </svg>
             </div>
@@ -133,4 +151,4 @@ const Stream: NextPage = () => {
   );
 };
 
-export default Stream;
+export default Streams;

@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 interface ItemProp {
   id?: number;
   title?: string;
-  color?: string;
+  color?: number;
   price?: number;
   like?: boolean;
   likeCount?: number;
@@ -30,7 +30,7 @@ export default function Item({
     // <Link href={`/items/${key}`} legacyBehavior>
     <div
       // href={`/items/${key}`}
-      onClick={() => router.push(`/items/${id}`)}
+      onClick={() => router.push(`/products/${id}`)}
       className="cursor-pointer rounded-xl bg-white px-9 py-8 shadow-sm transition duration-300 hover:bg-opacity-60"
     >
       <div className="flex flex-row gap-3">

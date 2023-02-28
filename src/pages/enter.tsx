@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cls } from "libs/client/utils";
 import { FieldError, FieldErrors, useForm } from "react-hook-form";
-import Input from "components/input";
+import Input from "@components/input";
 import { json } from "stream/consumers";
-import useMutation from "libs/client/useMutation";
+import useMutation from "@libs/client/useMutation";
+import { validateBody } from "twilio/lib/webhooks/webhooks";
+import { useRouter } from "next/router";
 
 const marginBetween: number = 14;
 
@@ -13,34 +15,63 @@ const marginBetween: number = 14;
 // }
 interface EnterProps {
   email?: string;
-  phone?: string;
+  phone?: number;
+}
+
+interface TokenProps {
+  token: string;
+}
+
+interface ResultMutationProp {
+  ok: boolean;
 }
 
 export default function Enter() {
-  const [enter, { loading, data, error }] = useMutation("/api/users/enter");
-  const [submitting, setSubmitting] = useState(false);
-  const { register, watch, reset, handleSubmit } = useForm<EnterProps>();
+  const [enter, { loading, data, error }] =
+    useMutation<ResultMutationProp>("/api/users/enter");
+
+  const [confirmToken, { loading: tokenLoading, data: tokenData }] =
+    useMutation<ResultMutationProp>("/api/users/confirm");
+
+  const {
+    register,
+    reset,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<EnterProps>();
+
+  const { register: tokenRegister, handleSubmit: tokenHandleSubmit } =
+    useForm<TokenProps>();
+
   const [method, setMethod] = useState<"email" | "phone">("email");
+
   const onEmailClick = () => {
     reset();
     setMethod("email");
   };
+
   const onPhoneClick = () => {
     reset();
     setMethod("phone");
   };
+
   const onValid = (data: EnterProps) => {
-    setSubmitting(true);
-    fetch("/api/users/enter", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then(() => {
-      setSubmitting(false);
-    });
+    if (loading) return;
+    enter(data);
   };
+
+  const onTokenValid = (data: TokenProps) => {
+    if (tokenLoading) return; //loading이 true면 일단 mutation 함수가 실행되고 있다는 뜻이니까 또 제출 안하게 블락시킨다.
+    confirmToken(data);
+  };
+
+  const router = useRouter();
+  useEffect(() => {
+    if (tokenData?.ok) {
+      router.push("/");
+    }
+  }, [tokenData, router]);
+
   return (
     <div className="flex min-h-screen flex-col justify-center bg-slate-300">
       <div className="mx-5 rounded-xl bg-white bg-opacity-80 p-5 shadow-md backdrop-blur-sm">
@@ -50,59 +81,97 @@ export default function Enter() {
           Carrot
         </h3>
         <div className={`mt-${marginBetween}`}>
-          <div className="flex flex-col items-center">
-            <h5 className="text-sm font-medium text-gray-400">Enter using:</h5>
-            <div
-              className={`mt-${marginBetween} grid w-full grid-cols-2 gap-16 `}
+          {data?.ok ? (
+            <form
+              className="mt-8 flex flex-col"
+              onSubmit={tokenHandleSubmit(onTokenValid)}
             >
-              <button
-                className={cls(
-                  "border-b-2 pb-4 font-normal",
-                  method === "email"
-                    ? " border-teal-500 font-semibold text-teal-500 transition-colors duration-500"
-                    : "border-transparent text-gray-500",
-                )}
-                onClick={onEmailClick}
-              >
-                Email
-              </button>
-              <button
-                className={cls(
-                  "border-b-2 pb-4 font-normal",
-                  method === "phone"
-                    ? " border-teal-500 font-bold text-teal-500 transition-colors duration-500"
-                    : "border-transparent  text-gray-500",
-                )}
-                onClick={onPhoneClick}
-              >
-                Phone
-              </button>
-            </div>
-          </div>
-          <form className="mt-8 flex flex-col" onSubmit={handleSubmit(onValid)}>
-            {method === "email" ? (
               <Input
-                label={"Email address"}
-                name={"email"}
-                kind={"text"}
+                label={"Validation Code"}
+                name={"token"}
+                type="number"
                 required
-                register={register("email", { required: true })}
+                register={tokenRegister("token", { required: true })} //이름 겹칠 때 사용하기
               />
-            ) : null}
-            {method === "phone" ? (
-              <Input
-                label={"Phone number"}
-                name={"phone"}
-                kind={"phone"}
-                required
-                register={register("phone", { required: true })}
-              />
-            ) : null}
-            <button className="mx-auto mt-8 w-1/2 rounded-full bg-teal-500 py-2 font-bold text-white shadow-sm transition duration-500 hover:bg-teal-400">
-              {method === "email" ? "Get login link" : null}
-              {method === "phone" ? "Get one-time password" : null}
-            </button>
-          </form>
+
+              <button className="mx-auto mt-8 w-1/2 rounded-full bg-teal-500 py-2 font-bold text-white shadow-sm transition duration-500 hover:bg-teal-400">
+                {tokenLoading ? "Loading" : "Confirm the code"}
+              </button>
+            </form>
+          ) : (
+            <>
+              <div className="flex flex-col items-center">
+                <h5 className="text-sm font-medium text-gray-400">
+                  Enter using:
+                </h5>
+                <div
+                  className={`mt-${marginBetween} grid w-full grid-cols-2 gap-16 `}
+                >
+                  <button
+                    className={cls(
+                      "border-b-2 pb-4 font-normal",
+                      method === "email"
+                        ? " border-teal-500 font-semibold text-teal-500 transition-colors duration-500"
+                        : "border-transparent text-gray-500",
+                    )}
+                    onClick={onEmailClick}
+                  >
+                    Email
+                  </button>
+                  <button
+                    className={cls(
+                      "border-b-2 pb-4 font-normal",
+                      method === "phone"
+                        ? " border-teal-500 font-bold text-teal-500 transition-colors duration-500"
+                        : "border-transparent  text-gray-500",
+                    )}
+                    onClick={onPhoneClick}
+                  >
+                    Phone
+                  </button>
+                </div>
+              </div>
+              <form
+                className="mt-8 flex flex-col"
+                onSubmit={handleSubmit(onValid)}
+              >
+                {method === "email" ? (
+                  <Input
+                    label={"Email address"}
+                    name={"email"}
+                    kind={"text"}
+                    required
+                    register={register("email", { required: true })}
+                  />
+                ) : null}
+                {method === "phone" ? (
+                  <Input
+                    label={"Phone number"}
+                    name={"phone"}
+                    kind={"phone"}
+                    required
+                    register={register("phone", {
+                      required: true,
+                      minLength: {
+                        value: 10,
+                        message: "10자 이상 작성해주세요",
+                      },
+                    })}
+                  />
+                ) : null}
+                <div>{errors?.phone?.message}</div>
+                <button className="mx-auto mt-8 w-1/2 rounded-full bg-teal-500 py-2 font-bold text-white shadow-sm transition duration-500 hover:bg-teal-400">
+                  {method === "email" ? "Get login link" : null}
+                  {method === "phone"
+                    ? tokenLoading
+                      ? "Loading"
+                      : "Get one-time password"
+                    : null}
+                </button>
+              </form>
+            </>
+          )}
+
           <div className="mt-8">
             <div className="relative">
               <div className="absolute w-full border-t border-gray-300" />
